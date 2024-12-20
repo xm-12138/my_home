@@ -38,12 +38,11 @@ jobs:
       # 构建程序
       - name: Build Website
         run: npm run build
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        # 默认的 GITHUB_TOKEN 会自动传递，无需显式传递
 
       # 查看构建后的目录
       - name: List build directory
-        run: ls -alh dist
+        run: ls -alh dist  # 确保 dist 是正确的构建目录
 
       # 部署到 GitHub Pages
       - name: Deploy to GitHub Pages
@@ -52,4 +51,4 @@ jobs:
           target_branch: gh-pages
           build_dir: dist
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 或者使用 ACCESS_TOKEN
