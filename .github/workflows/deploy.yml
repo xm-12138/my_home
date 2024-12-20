@@ -1,0 +1,47 @@
+name: Deploy to Demo Branch
+
+on:
+  push:
+    branches:
+      - dev  # 触发工作流的分支
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # 选择一个 Ubuntu 环境来运行工作流
+
+    steps:
+      # Step 1: Checkout the dev branch
+      - name: Checkout dev branch
+        uses: actions/checkout@v3
+        with:
+          ref: dev  # 检出 dev 分支内容
+
+      # Step 2: Setup Git (必需的步骤以便推送更改到 demo 分支)
+      - name: Set up Git
+        run: |
+          git config --global user.name "Your Name"
+          git config --global user.email "your-email@example.com"
+
+      # Step 3: 解压 dev 分支的文件
+      - name: Unzip files
+        run: |
+          mkdir -p output
+          tar -xzvf path/to/your/file.tar.gz -C output  # 假设你要解压一个 tar.gz 文件
+
+      # Step 4: Checkout demo branch
+      - name: Checkout demo branch
+        uses: actions/checkout@v3
+        with:
+          ref: demo  # 检出 demo 分支
+
+      # Step 5: Copy the unzipped files to demo branch
+      - name: Copy unzipped files to demo branch
+        run: |
+          cp -r ../output/* ./  # 将解压的文件复制到当前 demo 分支的工作目录
+
+      # Step 6: Commit and push changes to demo branch
+      - name: Commit and push changes to demo branch
+        run: |
+          git add .
+          git commit -m "Deploy to demo branch"
+          git push origin demo  # 将更改推送到 demo 分支
