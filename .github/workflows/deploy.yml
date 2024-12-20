@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest  # 选择一个 Ubuntu 环境来运行工作流
 
     steps:
-      # Step 1: Checkout the dev branch
+      # Step 1: Checkout dev branch
       - name: Checkout dev branch
         uses: actions/checkout@v3
         with:
@@ -22,24 +22,30 @@ jobs:
           git config --global user.name "Your Name"
           git config --global user.email "your-email@example.com"
 
-      # Step 3: 解压 dev 分支的文件
-      - name: Unzip files
+      # Step 3: Download the artifact (home.zip)
+      - name: Download Home artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Home  # artifact 的名称是 Home，根据你的上传名称可能不同
+
+      # Step 4: Unzip home.zip
+      - name: Unzip home.zip
         run: |
           mkdir -p output
-          tar -xzvf path/to/your/file.tar.gz -C output  # 假设你要解压一个 tar.gz 文件
+          unzip home.zip -d output  # 解压 home.zip 文件到 output 目录
 
-      # Step 4: Checkout demo branch
+      # Step 5: Checkout demo branch
       - name: Checkout demo branch
         uses: actions/checkout@v3
         with:
           ref: demo  # 检出 demo 分支
 
-      # Step 5: Copy the unzipped files to demo branch
+      # Step 6: Copy the unzipped files to demo branch
       - name: Copy unzipped files to demo branch
         run: |
           cp -r ../output/* ./  # 将解压的文件复制到当前 demo 分支的工作目录
 
-      # Step 6: Commit and push changes to demo branch
+      # Step 7: Commit and push changes to demo branch
       - name: Commit and push changes to demo branch
         run: |
           git add .
